@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<section id="chat-group-section">
+    <div class="container">
+        <div class="row">
+            {% for chat in chatgroups %}
+                <div class="col-12 d-flex align-items-center bg-light border rounded px-3 py-2 mb-2">
+                    <p class="fw-bold mb-0">{{ chat.name }}</p>
+                    <a href="{% url 'rooms:chat' chat.slug %}" class="btn btn-success ms-auto">Join</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

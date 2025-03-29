@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+    <div class="profile-section" id="profile-section" style="padding-top:70px">
+        <h2>{{ user.username }}</h2>
+
+        {% if user.profile.picture %}
+            <img src="{{ user.profile.picture.url }}" alt="Profile Picture">
+        {% endif %}
+
+        {% if user.first_name and user.last_name %}
+            <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+        {% endif %}
+
+        {% if user.profile.birth_date %}
+        <p><strong>Birth Date:</strong> {{ user.profile.birth_date }}</p>
+        {% endif %}
+
+        {% if user.email %}
+        <p><strong>E-mail:</strong> {{ user.email }}</p>
+        {% endif %}
+
+        {% if user == request.user %}
+            <a href="{% url 'core:update_profile' %}" class="btn btn-primary">Edit Profile</a>
+        {% endif%}
+    </div>
+
+{% endblock%}

@@ -1,0 +1,5 @@
+- Update Consumer.py ✔
+- Update chat.js ✔
+- integrate file and message handling ✔
+- integrate private groups
+- Update chat.html

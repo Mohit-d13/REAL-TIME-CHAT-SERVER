@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+{% block content %}
+    <section class="form-section">
+        <div class="container">
+            <div class="row">
+                <div class="col bg-light">
+                    <h2>Sign up</h2>
+                    <span class="text-muted">Please enter your credentials to continue</span>
+                    <form method="post" action=".">  {% csrf_token %}
+                        <label class="form-label" for="username">Username:</label>
+                        <input class="form-control p-2 mb-3" type="username" id="username" name="username" placeholder="Enter your Username" required>
+                        <label class="form-label" for="passwd1">Password:</label>
+                        <input class="form-control p-2 mb-3" type="password" id="passwd1" name="password1" placeholder="Enter your Password" required>
+                        <label class="form-label" for="passwd2">Confirm-Password:</label>
+                        <input class="form-control p-2 mb-3" type="password" id="passwd2" name="password2" placeholder="Confirm Password" required>
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+
+                        {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <div class="form_errors">
+                                        <p>{{ error|escape }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
