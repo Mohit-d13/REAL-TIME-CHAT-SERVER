@@ -112,6 +112,7 @@
 
 #chat-section .container {
   margin-top: 100px;
+  margin-bottom: 50px;
 }
 
 #chat-section .message-box {
@@ -121,6 +122,3 @@
   overflow-y: scroll;
 }
 
-#chat-section .send {
-  flex-direction: row-reverse;
-}

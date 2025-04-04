@@ -1,58 +1,44 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% block content %}
-
 <section id="chat-section">
     <div class="container">
         <div class="row">
-            <div class="col-12 border position-relative" id="chat-messages">
-                <div class="message-box">
-                {% for message in messages %}
-                    {% if message.user == request.user %}
-                    <div class="send mb-4 d-flex gap-1 align-items-start">
-                        <div class="me-2">
-                            <img src="{{ message.user.profile.picture.url }}" class="rounded-circle" alt="{{ message.user }}" width="40" height="40">
+            <div class="col-12 border bg-light px-3 py-2">
+                <h3 class="mb-0">Messages</h3>
+            </div>
+            <div class="col-12 border-start border-end">
+                    <!-- Chat Messages Container -->
+                <div id="chat-messages" class="my-2">
+                    <div class="message-box">
+                        {% for message in messages %}
+                        <div class="{% if message.user == request.user %} flex-row-reverse {% endif %} d-flex mb-3">
+                            <img src="{{ message.user.profile.picture.url }}" class="rounded-circle" alt="{{ message.user.username }}" width="40" height="40">
+                            <div class="{% if message.user == request.user %} bg-light me-2 {% else %} bg-dark text-white ms-2 {% endif %} d-flex flex-column align-items-start rounded p-2">
+                                <strong>{% if message.user == request.user %}You{% else %}{{ message.user.username }}{% endif %}</strong>
+                                {% if message.message_type == 'image'%}
+                                    <img src="{{ message.file.url }}" class="img-fluid rounded my-2" alt="{{ message.file }}" width="300" height="300">
+                                {% elif message.message_type == 'file'%}
+                                    <a href="{{ message.file.url }}" target="_blank" download><i class="bi bi-file-earmark-arrow-down-fill h1 text-warning"></i> {{ message.file }}</a>
+                                {% else %}
+                                    <p>{{ message.content }}</p>
+                                {% endif %}
+                                <small class="text-muted">{{ message.date_added }}</small>
+                            </div>
                         </div>
-                        <div class="flex-shrink-1 bg-light rounded py-2 px-3">
-                            <div class="fw-bold mb-1">You</div>
-                            {% if message.message_type == 'image'%}
-                                <img src="{{ message.file.url }}" alt="{{ message.content|default:'Image' }}">
-                            {% elif message.message_type == 'file'%}
-                                <a href="{{ message.file.url }}" download>{{ message.content|default:'File' }}</a>
-                            {% else %}
-                                <p>{{ message.content }}</p>
-                            {% endif %}
-                            <div class="text-muted small text-nowrap mt-2">{{ message.date_added }}</div>
-                        </div>
+                        {% empty %}
+                            <div class="text-center text-muted py-4">
+                                No messages yet. Start the conversation!
+                            </div>
+                        {% endfor %}
                     </div>
-                    
-                    {% else %}
-                    <div class="receive pb-4 d-flex gap-1 align-items-start">
-                        <div class="ms-2">
-                            <img src="{{ message.user.profile.picture.url }}" class="rounded-circle mr-1" alt="{{ message.user }}" width="40" height="40">
-                        </div>
-                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
-                            <div class="fw-bold mb-1">{{ message.user.username }}</div>
-                            {% if message.message_type == 'image'%}
-                                <img src="{{ message.file.url }}" class="img-fluid" alt="{{ message.content|default:'Image' }}">
-                            {% elif message.message_type == 'file'%}
-                                <a href="{{ message.file.url }}" download>{{ message.content|default:'File' }}</a>
-                            {% else %}
-                                <p>{{ message.content }}</p>
-                            {% endif %}
-                            <div class="text-muted text-sm text-nowrap mt-2">{{ message.date_added }}</div>
-                        </div>
-                    </div>
-                    {% endif %}
-                {% endfor %}
                 </div>
             </div>
-            <div class="col-12 border">
+            <div class="col-12 border border-top-0">
                 <form method="post" action="" enctype="multipart/form-data" id="chat-form">
                     {% csrf_token %}
                     <div class="d-flex gap-2 align-items-center">
                         <input type="text" class="form-control" name="content" id="chat-message-input" placeholder="Send a message...">
-                        
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary" type="button" id="attachmentDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-paperclip"></i>
@@ -72,8 +58,7 @@
                                 </li>
                             </ul>
                         </div>
-                
-                        <button type="submit" class="btn btn-primary" id="chat-message-submit">Send</button>
+                        <button type="submit" class="btn btn-dark" id="chat-message-submit">Send</button>
                     </div>
                 </form>
             </div>

@@ -1,15 +1,17 @@
 import json
+import base64
+import uuid
 
 from channels.generic.websocket import AsyncWebsocketConsumer   # Class for creating consumer
 from channels.db import database_sync_to_async  # For storing things into database in asynchronous view
 from asgiref.sync import async_to_sync
+from django.core.files.base import ContentFile
 
 from django.contrib.auth.models import User
 from .models import Room, ChatMessage
 
 
-
-class ChatConsumer(AsyncWebsocketConsumer,User):
+class ChatConsumer(AsyncWebsocketConsumer):
     # Creating connection
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -51,35 +53,37 @@ class ChatConsumer(AsyncWebsocketConsumer,User):
         data = json.loads(text_data)
         
         username = data['username']
-        message = data.get('message', '')
+        message_content = data.get('message', '')
         roomslug = data['roomslug']
         message_type = data.get('message_type', 'text')
         has_file = data.get('has_file', False)
+        file_data = data.get('file', None)
          
         room = await self.get_room(roomslug)
-        picture = await self.get_user(username)
+        user, picture = await self.get_user(username)
         
-        # # Create and Save message
-        # if room:
-        #     message = await self.save_message(
-        #         room=room,
-        #         user=user,
-        #         content=message,
-        #         message_type=message_type
-        #     )
+        # Create and Save message
+        if room:
+            message_obj = await self.save_message(
+                room=room,
+                user=user,
+                content=message_content,
+                message_type=message_type,
+                file=file_data if has_file else None
+            )
             
         # response data for message group
         response_data = {
             'type': 'chat_message',
             'username': username,
-            'message': message,
+            'message': message_content,
             'picture': picture.url,
             'message_type': message_type,
         }
         
         if has_file:
-            response_data['file_url'] = message.file.url if message.file else None
-            response_data['filename'] = message.file.name if message.file else None
+            response_data['file_url'] = message_obj.file.url 
+            response_data['filename'] = message_obj.file.name.split('/')[-1] 
             
         # Send response data to message group
         await self.channel_layer.group_send(
@@ -105,7 +109,7 @@ class ChatConsumer(AsyncWebsocketConsumer,User):
     @database_sync_to_async
     def get_user(self, username):
         user = User.objects.get(username=username)
-        return user.profile.picture
+        return user, user.profile.picture
     
     # @database_sync_to_async
     # def check_room_participation(self, room):
@@ -113,16 +117,38 @@ class ChatConsumer(AsyncWebsocketConsumer,User):
     #     return room.participants.filter(id=user.id).exists()   
     
     
-    # # Store data in database     
-    # @database_sync_to_async
-    # def save_message(self, user, room, content, message_type):
-       
-    #     message_obj = ChatMessage.objects.create(
-    #         user=user,
-    #         room=room,
-    #         content=content,
-    #         message_type=message_type
-    #         )
+    # Store data in database     
+    @database_sync_to_async
+    def save_message(self, user, room, content, message_type, file=None):
+        message_obj = ChatMessage.objects.create(
+            user=user,
+            room=room,
+            content=content,
+            message_type=message_type
+        )
 
-    #     return message_obj
+        if file:
+            # If file is base64 encoded data
+            if isinstance(file, str) and file.startswith('data:'):
+                format_info, base64_str = file.split(';base64,')
+                content_type = format_info.split(':')[-1]
+                file_ext = content_type.split('/')[-1]
+                
+                # Generate unique file name
+                unique_id = uuid.uuid4().hex[:8]
+                file_name = f"{user.username}_{unique_id}.{file_ext}"
+                
+                # Decode and save file
+                try:
+                    decoded_file = base64.b64decode(base64_str)
+                    message_obj.file.save(file_name, ContentFile(decoded_file), save=True)
+                except Exception as e:
+                    print(f"Error saving the file: {e}")
+            
+            # If file is already a file object
+            elif hasattr(file, 'name'):
+                message_obj.file = file
+                message_obj.save()
+                
+        return message_obj
         
