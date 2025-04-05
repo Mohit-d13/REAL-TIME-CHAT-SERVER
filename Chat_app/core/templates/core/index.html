@@ -1,19 +1,26 @@
 {% extends 'core/base.html' %}
 {% block content %}
     <div class="container" id="Intro-section">
-      <div class="row">
-        <div class="col">
-          <div class="text-center">
-            <h2>Chat App</h2>
+      <div class="row justify-content-center">
+        <div class="col border border-3 border-dark bg-light rounded text-center px-2 py-4">
+          {% if request.user.is_authenticated %}
+            <h3>Welcome Back!!!</h3>
+            <p>
+              Hi there! <strong>{{ request.user.username }}</strong> welcome back to Chat App. Catch up with your friends, colleagues, or communities click the link down below to start chatting again!
+            </p>
+            <div class="d-flex justify-content-center gap-2">
+              <a href="{% url 'rooms:chatgroup' %}" class="btn btn-warning">Rooms</a>
+            </div>
+          {% else %}
             <h3>Welcome to Real-Time Conversations</h3>
             <p>
               Join multiple chat rooms and engage in real-time discussions. Connect with friends, colleagues, or communities in dedicated spaces. Start chatting now!
             </p>
-          </div>
           <div class="d-flex justify-content-center gap-2">
-            <a href="{% url 'core:signup' %}" class="btn btn-primary">Sign up</a>
-            <a href="{% url 'core:login' %}" class="btn btn-success">Log in</a>
+            <a href="{% url 'core:signup' %}" class="btn btn-warning">Sign up</a>
+            <a href="{% url 'core:login' %}" class="btn btn-dark">Log in</a>
           <div>
+          {% endif %}
         </div>
       </div>
     </div>
