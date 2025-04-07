@@ -16,10 +16,9 @@ urlpatterns = [
     path('signup/', signup, name='signup'),
     path('login/', views.LoginView.as_view(template_name='core/login.html', authentication_form=LoginForm), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
-    path('update_profile', update_profile, name='update_profile'),
-    path('profile/', profile, name='profile')
+    path('profile/', profile, name='profile'),
+    path('update_profile', update_profile, name='update_profile')
 ] 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
