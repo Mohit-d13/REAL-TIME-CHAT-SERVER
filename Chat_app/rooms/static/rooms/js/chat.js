@@ -111,21 +111,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Determine if the message is from the current user
         const isCurrentUser = data.username === username;
-        messageDiv.classList.add(isCurrentUser ? 'flex-row-reverse' : null, 'd-flex', 'mb-3');
+        if (isCurrentUser) {
+            messageDiv.classList.add('flex-row-reverse');
+        }
+        messageDiv.classList.add('d-flex', 'mb-3');
+
+        let messageContent = '';
 
         // Message HTML template
         if (data.message_type === 'image' && data.file_url) {
             messageContent = `<img src="${data.file_url}" class="img-fluid rounded my-2" alt="${data.filename}" width="300" height="300">`;
         } else if (data.message_type === 'file' && data.file_url) {
             messageContent = `<a href="${data.file_url}" download><i class="bi bi-file-earmark-arrow-down-fill h1 text-warning"></i> ${data.filename}</a>`;
+        } else {
+            messageContent = `<p>${data.message}</p>`;
         }
 
         messageDiv.innerHTML = `
             <img src="${data.picture}" class="rounded-circle" alt="${data.username}" width="40" height="40">
-            <div class="${isCurrentUser ? 'bg-light me-2' : 'bg-dark text-white ms-2'} d-flex flex-column align-items-start rounded p-2">
+            <div class="${isCurrentUser ? 'bg-success me-2' : 'bg-dark ms-2'} d-flex flex-column align-items-start text-white rounded p-2">
                 <strong>${isCurrentUser ? 'You' : data.username}</strong>
                 ${messageContent}
-                <small class="text-muted">${new Date().toLocaleString()}</small>
+                <small style="lavender">${data.timestamp ? new Date(data.timestamp).toLocaleString() : new Date().toLocaleString()}</small>
             </div>
         `;
 
