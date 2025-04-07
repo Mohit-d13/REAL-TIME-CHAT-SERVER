@@ -10,11 +10,11 @@
                 </div>
                 <form method="post" action=".">  {% csrf_token %}
                     <div class="my-3">
-                        <label for="username" class="form-label">Username:</label>
+                        <label for="id_username" class="form-label">Username:</label>
                         {{ form.username }}
                     </div>
                     <div class="my-3">
-                        <label for="passwd" class="form-label">Password:</label>
+                        <label for="id_password" class="form-label">Password:</label>
                         {{ form.password }}
                     </div>
                     <div class="d-flex justify-content-between mb-3">
