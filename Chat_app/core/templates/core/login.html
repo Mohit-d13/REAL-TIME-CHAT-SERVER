@@ -1,29 +1,40 @@
 {% extends 'core/base.html' %}
 {% block content %}
-    <section class="form-section">
-        <div class="container">
-            <div class="row">
-                <div class="col bg-light">
-                    <h2>Log In</h2>
-                    <span class="text-muted">Please enter your credentials to continue</span>
-                    <form method="post" action=".">  {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="remember-forgot">
-                            <div class="remember">
-                                <input type="checkbox" id="remember">
-                                <label for="remember">Remember me</label>
-                            </div>
-                            <a href="#" class="forgot-password">Forgot Password?</a>
+    
+    <div class="container" id="form-section">
+        <div class="row justify-content-center">
+            <div class="col bg-light border border-dark rounded p-3" style="max-width:25rem;">
+                <div class="mb-3 pb-3">
+                    <h2 class="mb-0">Log In</h2>
+                    <small class="text-muted">Please enter your credentials to continue</small>
+                </div>
+                <form method="post" action=".">  {% csrf_token %}
+                    <div class="my-3">
+                        <label for="username" class="form-label">Username:</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="my-3">
+                        <label for="passwd" class="form-label">Password:</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="form-check small">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                Remember me
+                            </label>
                         </div>
-                        <button type="submit" class="btn btn-primary">Log In</button>
-                        <div class="signup-link">
-                            Don't have an account? <a href="#">Sign up</a>
+                        <a href="#" class="small text-info">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-warning fw-bold my-2">Log In</button>
+                        <div class="text-center small mt-2">
+                            Don't have an account? <a href="{% url 'core:signup' %}" class="link-info">Sign up</a>
                           </div>
 
                         {% if form.errors %}
                             {% for field in form %}
                                 {% for error in field.errors %}
-                                    <div class="form_errors">
+                                    <div class="form_errors alert alert-danger">
                                         <p>{{ error|escape }}</p>
                                     </div>
                                 {% endfor %}

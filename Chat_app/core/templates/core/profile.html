@@ -2,34 +2,43 @@
 
 {% block content %}
     <div class="container" id="profile-section">
-        <div class="row justify-content-center">
-            <div class="col border bg-light">
-                {% if user.profile.picture %}
-                    <img src="{{ user.profile.picture.url }}" alt="{{ user.username }}" class="rounded-circle p-2">
-                {% endif %}
-
-                <div class="border-top border-bottom p-2">
-                    <h3 class="mb-0">{{ user.username }}</h3>
-                </div>
-
-                <div class="py-2 my-2">
-                    {% if user.first_name and user.last_name %}
-                    <p><strong>Name: </strong>{{ user.first_name }} {{ user.last_name }}</h3>
-                    {% endif %}
-
-                    {% if user.profile.birth_date %}
-                    <p><strong>Birth Date: </strong>{{ user.profile.birth_date }}</p>
-                    {% endif %}
-
-                    {% if user.email %}
-                    <p><strong>E-mail: </strong>{{ user.email }}</p>
-                    {% endif %}
-                
-                    {% if user == request.user %}
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'core:update_profile' %}" class="btn btn-secondary">Edit Profile</a>
+        <div class="row border border-dark">
+            <div class="col-12 border-bottom bg-dark text-warning py-2">
+                <h3 class="mb-0">My Profile</h3>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center align-items-center py-2">
+                <img src="{{ user.profile.picture.url }}" alt="{{ user.username }}" class="img-thumbnail">
+            </div>
+            <div class="col-md-8 py-2">
+                <h5 class="border-bottom pb-2">Personal Details</h5>
+                <div class="row gy-2">
+                    <div class="col-6">
+                        <strong>Username</strong><br>
+                        <p class="text-muted">{{ user.username }}</p>
                     </div>
-                    {% endif%}
+                    <div class="col-6">
+                        <strong>Name</strong><br>
+                        {% if user.first_name and user.last_name %}
+                            <p class="text-muted">{{ user.first_name }} {{ user.last_name }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <strong>E-mail</strong><br>
+                        {% if user.email %}
+                            <p class="text-muted">{{ user.email }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <strong>Birth Date</strong><br>
+                        {% if user.profile.birth_date %}
+                            <p class="text-muted">{{ user.profile.birth_date }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-12">
+                        {% if user == request.user %}
+                            <a href="{% url 'core:update_profile' %}" class="btn btn-secondary">Edit Profile</a>
+                        {% endif%}
+                    </div>
                 </div>
             </div>
         </div> 

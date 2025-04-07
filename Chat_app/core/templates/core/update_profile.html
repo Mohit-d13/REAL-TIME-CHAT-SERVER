@@ -1,14 +1,76 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-    <h2 style="padding-top:70px">Update Profile</h2>
-    <form action="." method="post" enctype="multipart/form-data">   {% csrf_token %}
-        <h3>User Information</h3>
-        {{ user_form.as_p }}
+<div class="container" id="profileUpdateForm">
+    <div class="row border border-2 bg-light rounded">
+        <div class="col-12 py-2">
+            <h3 class="py-2 border-bottom border-dark">Edit Profile</h3>
+        </div>
+        <div class="col py-2">
+            <form action="{% url 'core:update_profile' %}" method="post" enctype="multipart/form-data">   {% csrf_token %}
+                <div class="row gy-3">
+                    <div class="col-6">
+                        <label for="id_username" class="form-label">Username:</label>
+                        {{ user_form.username }}
+                    </div>
+                    <div class="col-6">
+                        <label for="id_email" class="form-label">Email:</label>
+                        {{ user_form.email }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_first_name" class="form-label">First Name:</label>
+                        {{ user_form.first_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_last_name" class="form-label">Last Name:</label>
+                        {{ user_form.last_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_birth_date" class="form-label">Birth Date:</label>
+                        {{ profile_form.birth_date }}
+                    </div>
+                    
+                    <div class="col-12">
+                        {% if request.user.profile.picture %}
+                            <p>Current Profile Image:</p>
+                                <img src="{{ request.user.profile.picture.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 150px;">
+                        {% endif %}
+                        <div class="my-3"> 
+                            <div class="input-group mb-2"> 
+                                <span class="input-group-text">Currently</span> 
+                                <div class="form-control d-flex h-auto"> 
+                                    <span class="text-break flex-grow-1"> 
+                                        <a href="{{ profile_form.picture.value }}">{{profile_form.picture.value}}</a> 
+                                    </span> 
+                                    <span class="align-self-center ml-2"> 
+                                        <span class="form-check"> 
+                                            <input type="checkbox" name="picture-clear" id="picture-clear_id" class="form-check-input"> 
+                                            <label class="form-check-label mb-0" for="picture-clear_id">Clear</label> 
+                                        </span> 
+                                    </span> 
+                                </div>
+                            </div>
+                        </div>
+                        <label for="id_picture" class="form-label">Profile Picture:</label>
+                            {{ profile_form.picture }}
 
-        <h3>Profile Information</h3>
-        {{ profile_form.as_p }}
-
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </form>
+                        <div class="mt-4 text-center">
+                            <button type="submit" class="btn btn-warning">Save</button>
+                            <a href="{% url 'core:profile' %}" class="btn btn-danger ml-2">Cancel</a>
+                        </div>    
+                    </div>
+                
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="form_errors alert alert-danger my-2">
+                                <p>{{ error|escape }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

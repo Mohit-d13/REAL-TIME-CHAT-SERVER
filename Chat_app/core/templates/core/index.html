@@ -2,11 +2,11 @@
 {% block content %}
     <div class="container" id="Intro-section">
       <div class="row justify-content-center">
-        <div class="col border border-3 border-dark bg-light rounded text-center px-2 py-4">
+        <div class="col border border-3 border-dark bg-light rounded text-center px-2 py-4" style="max-width:35rem;">
           {% if request.user.is_authenticated %}
             <h3>Welcome Back!!!</h3>
             <p>
-              Hi there! <strong>{{ request.user.username }}</strong> welcome back to Chat App. Catch up with your friends, colleagues, or communities click the link down below to start chatting again!
+              Hi there!👏 <strong>{{ request.user.username }}</strong> welcome back to Chat App. Catch up with your friends, colleagues, or communities click the link down below to start chatting again!
             </p>
             <div class="d-flex justify-content-center gap-2">
               <a href="{% url 'rooms:chatgroup' %}" class="btn btn-warning">Rooms</a>
@@ -18,7 +18,7 @@
             </p>
           <div class="d-flex justify-content-center gap-2">
             <a href="{% url 'core:signup' %}" class="btn btn-warning">Sign up</a>
-            <a href="{% url 'core:login' %}" class="btn btn-dark">Log in</a>
+            <a href="{% url 'core:login' %}" class="btn btn-danger">Log in</a>
           <div>
           {% endif %}
         </div>
