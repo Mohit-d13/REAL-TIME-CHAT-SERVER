@@ -5,10 +5,46 @@
 <section id="chat-group-section">
     <div class="container">
         <div class="row">
+            <div class="col-12 p-0 mb-2">
+                <div class="text-end">
+                <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#createRoomForm" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="bi bi-plus-circle h4"></i>
+                </button>
+                </div>
+                <div class="collapse" id="createRoomForm">
+                    <div class="border rounded bg-light p-2 mt-2">
+                      <form method="post" action="">
+                        {% csrf_token %}
+                        <h2 class="mt-2 mb-3">Create New Room</h2>
+                        <div class="d-flex align-items-center gap-3 my-3">
+                            <label for="room-name" class="form-label fw-bold">Name:</label>
+                            <input type="text" class="form-control" id="room-name" name="name" placeholder="Enter room name.."required>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 my-3">
+                            <label for="room-slug" class="form-label fw-bold">Slug:</label>
+                            <input type="text" class="form-control" id="room-slug" name="slug" placeholder="Enter room slug.." required>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Submit</button>
+
+                        {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <div class="form_errors">
+                                        <p>{{ error|escape }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+
+                      </form>
+                    </div>
+                </div>
+            </div>
+
             {% for chat in chatgroups %}
                 <div class="col-12 d-flex align-items-center bg-light border rounded px-3 py-2 mb-2">
-                    <p class="fw-bold mb-0">{{ chat.name }}</p>
-                    <a href="{% url 'rooms:chat' chat.slug %}" class="btn btn-success ms-auto">Join</a>
+                    <strong>{{ chat.name }}</strong>
+                    <a href="{% url 'rooms:chat' chat.slug %}" class="btn btn-success fw-bold ms-auto">Join</a>
                 </div>
             {% endfor %}
         </div>

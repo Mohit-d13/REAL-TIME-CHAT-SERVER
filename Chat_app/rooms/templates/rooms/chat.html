@@ -1,70 +1,69 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% block content %}
-<section id="chat-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 border bg-light px-3 py-2">
-                <h3 class="mb-0">Messages</h3>
-            </div>
-            <div class="col-12 border-start border-end">
-                    <!-- Chat Messages Container -->
-                <div id="chat-messages" class="my-2">
-                    <div class="message-box">
-                        {% for message in messages %}
-                        <div class="{% if message.user == request.user %} flex-row-reverse {% endif %} d-flex mb-3">
-                            <img src="{{ message.user.profile.picture.url }}" class="rounded-circle" alt="{{ message.user.username }}" width="40" height="40">
-                            <div class="{% if message.user == request.user %} bg-light me-2 {% else %} bg-dark text-white ms-2 {% endif %} d-flex flex-column align-items-start rounded p-2">
-                                <strong>{% if message.user == request.user %}You{% else %}{{ message.user.username }}{% endif %}</strong>
-                                {% if message.message_type == 'image'%}
-                                    <img src="{{ message.file.url }}" class="img-fluid rounded my-2" alt="{{ message.file }}" width="300" height="300">
-                                {% elif message.message_type == 'file'%}
-                                    <a href="{{ message.file.url }}" target="_blank" download><i class="bi bi-file-earmark-arrow-down-fill h1 text-warning"></i> {{ message.file }}</a>
-                                {% else %}
-                                    <p>{{ message.content }}</p>
-                                {% endif %}
-                                <small class="text-muted">{{ message.date_added }}</small>
-                            </div>
+
+<div class="container" id="chat-section">
+    <div class="row border rounded border-dark">
+        <!-- Heading Group Name and Type -->
+        <div class="col-12 border-bottom bg-dark py-2">
+            <h2 class="mb-0 text-white">{{ room.name }}</h2>
+            <small class="text-muted">Group-chat: {% if room.is_private %}private{% else %}public{% endif %}</small>
+        </div>
+        <div class="col-12 bg-light overflow-auto py-2" id="chat-messages" style="height:800px;">
+            <!-- Chat Messages Container -->
+            <div class="message-box">
+                {% for message in messages %}
+                    <div class="{% if message.user == request.user %} flex-row-reverse {% endif %} d-flex mb-3">
+                        <img src="{{ message.user.profile.picture.url }}" class="rounded-circle" alt="{{ message.user.username }}" width="40" height="40">
+                        <div class="{% if message.user == request.user %} bg-success me-2 {% else %} bg-dark ms-2 {% endif %} d-flex flex-column align-items-start text-white rounded p-2">
+                            <strong>{% if message.user == request.user %}You{% else %}{{ message.user.username }}{% endif %}</strong>
+                            {% if message.message_type == 'image'%}
+                                <img src="{{ message.file.url }}" class="img-fluid rounded my-2" alt="{{ message.file }}" width="300" height="300">
+                            {% elif message.message_type == 'file'%}
+                                <a href="{{ message.file.url }}" target="_blank" download><i class="bi bi-file-earmark-arrow-down-fill h1 text-warning"></i> {{ message.file }}</a>
+                            {% else %}
+                                <p>{{ message.content }}</p>
+                            {% endif %}
+                            <small style="color:lavender">{{ message.date_added }}</small>
                         </div>
-                        {% empty %}
-                            <div class="text-center text-muted py-4">
-                                No messages yet. Start the conversation!
-                            </div>
-                        {% endfor %}
                     </div>
-                </div>
-            </div>
-            <div class="col-12 border border-top-0">
-                <form method="post" action="" enctype="multipart/form-data" id="chat-form">
-                    {% csrf_token %}
-                    <div class="d-flex gap-2 align-items-center">
-                        <input type="text" class="form-control" name="content" id="chat-message-input" placeholder="Send a message...">
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary" type="button" id="attachmentDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-paperclip"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="attachmentDropdown">
-                                <li>
-                                    <label class="dropdown-item">
-                                        <input type="file" name="image" accept="image/*" class="d-none" id="image-upload">
-                                        Upload Image
-                                    </label>
-                                </li>
-                                <li>
-                                    <label class="dropdown-item">
-                                        <input type="file" name="file" accept=".pdf,.doc,.docx,.txt" class="d-none" id="file-upload">
-                                        Upload File
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
-                        <button type="submit" class="btn btn-dark" id="chat-message-submit">Send</button>
+                {% empty %}
+                    <div class="text-center text-muted py-4">
+                        No messages yet. Start the conversation!
                     </div>
-                </form>
+                {% endfor %}
             </div>
         </div>
+        <div class="col-12 py-2">
+            <form method="post" action="" enctype="multipart/form-data" id="chat-form">
+                {% csrf_token %}
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="text" class="form-control" name="content" id="chat-message-input" placeholder="Send a message...">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary" type="button" id="attachmentDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-paperclip"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="attachmentDropdown">
+                            <li>
+                                <label class="dropdown-item">
+                                    <input type="file" name="image" accept="image/*" class="d-none" id="image-upload">
+                                    Upload Image
+                                </label>
+                            </li>
+                            <li>
+                                <label class="dropdown-item">
+                                    <input type="file" name="file" accept=".pdf,.doc,.docx,.txt" class="d-none" id="file-upload">
+                                    Upload File
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                    <button type="submit" class="btn btn-dark" id="chat-message-submit">Send</button>
+                </div>
+            </form>
+        </div>
     </div>
-</section>
+</div>
 
 {% endblock %}
 
